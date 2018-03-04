@@ -16,8 +16,8 @@ MIN_SOUND_TIME = 4
 TELEGRAM_ENABLE = True
 TELEGRAM_LOCATION = True
 TELEGRAM_LOCATION_LATITUDE = 0
-TELEGRAM_LOCATION_LONGITUDE = -0
-TELEGRAM_BOT_TOKEN = ""
+TELEGRAM_LOCATION_LONGITUDE = 0
+TELEGRAM_BOT_TOKEN = ":"
 TELEGRAM_DESTINATION = ""
 TELEGRAM_TEXT = "*DING, DONG !*\nÇa a sonné à l'appart !"
 TELEGRAM_PARSE_MODE = "markdown"
@@ -57,7 +57,6 @@ def play_next_song():
 
 def launch_action():
     print("================ Ding! ================")
-    play_next_song()
     if TELEGRAM_ENABLE:
         alert_telegram = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
         alert_telegram.send_message(chat_id=TELEGRAM_DESTINATION, text=TELEGRAM_TEXT, parse_mode=TELEGRAM_PARSE_MODE)
@@ -66,6 +65,7 @@ def launch_action():
             alert_telegram.send_location(chat_id=TELEGRAM_DESTINATION,
                                          latitude=TELEGRAM_LOCATION_LATITUDE, longitude=TELEGRAM_LOCATION_LONGITUDE)
             print("Telegram location send")
+    play_next_song()
 
 
 def callback_gpio(channel):
