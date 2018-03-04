@@ -2,6 +2,7 @@
 
 import RPi.GPIO as GPIO
 import time
+import telegram
 from os import listdir
 from os.path import isfile, join, dirname, realpath
 from pygame import mixer
@@ -11,6 +12,16 @@ SONG_PATH = SCRIPT_PATH + "/songs/"
 GPIO_SIGNAL = 7
 BOUNCE_TIME = 200
 MIN_SOUND_TIME = 4
+
+TELEGRAM_ENABLE = True
+TELEGRAM_LOCATION = True
+TELEGRAM_LOCATION_LATITUDE = 0
+TELEGRAM_LOCATION_LONGITUDE = -0
+TELEGRAM_BOT_TOKEN = ""
+TELEGRAM_DESTINATION = ""
+TELEGRAM_TEXT = "*DING, DONG !*\nÇa a sonné à l'appart !"
+TELEGRAM_PARSE_MODE = "markdown"
+
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(GPIO_SIGNAL, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 mixer.init()
@@ -47,6 +58,14 @@ def play_next_song():
 def launch_action():
     print("================ Ding! ================")
     play_next_song()
+    if TELEGRAM_ENABLE:
+        alert_telegram = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
+        alert_telegram.send_message(chat_id=TELEGRAM_DESTINATION, text=TELEGRAM_TEXT, parse_mode=TELEGRAM_PARSE_MODE)
+        print("Telegram notifications send")
+        if TELEGRAM_LOCATION:
+            alert_telegram.send_location(chat_id=TELEGRAM_DESTINATION,
+                                         latitude=TELEGRAM_LOCATION_LATITUDE, longitude=TELEGRAM_LOCATION_LONGITUDE)
+            print("Telegram location send")
 
 
 def callback_gpio(channel):
