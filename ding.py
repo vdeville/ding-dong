@@ -48,6 +48,9 @@ def callback_gpio(channel):
 
 
 if __name__ == '__main__':
-    GPIO.add_event_detect(GPIO_SIGNAL, GPIO.RISING, callback=callback_gpio, bouncetime=BOUNCE_TIME)
-    while True:
-        pass
+    try:
+        GPIO.add_event_detect(GPIO_SIGNAL, GPIO.RISING, callback=callback_gpio, bouncetime=BOUNCE_TIME)
+        while True:
+            pass
+    except KeyboardInterrupt:
+        print("Bye!")
