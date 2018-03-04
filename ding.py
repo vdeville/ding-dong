@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import RPi.GPIO as GPIO
+import time
 from os import listdir
 from os.path import isfile, join, dirname, realpath
 from pygame import mixer
@@ -9,12 +10,14 @@ SCRIPT_PATH = dirname(realpath(__file__))
 SONG_PATH = SCRIPT_PATH + "/songs/"
 GPIO_SIGNAL = 7
 BOUNCE_TIME = 200
+MIN_SOUND_TIME = 4
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(GPIO_SIGNAL, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+mixer.init()
 
 song_list = [f for f in listdir(SONG_PATH) if isfile(join(SONG_PATH, f))]
 current_index = 0
-mixer.init()
+
 
 def update_index():
     global current_index
@@ -28,10 +31,15 @@ def play_next_song():
     song = SONG_PATH + song_list[current_index]
     print("Index: " + str(current_index))
     print("Playing: " + song)
-    player = mixer.Sound(file=song)
-    player.play()
+    sound = mixer.Sound(file=song)
+    sound.play()
+
     while mixer.get_busy():
         pass
+    # Fix for small song. If default song of "ding" is biggest than custom song
+    if sound.get_length() < MIN_SOUND_TIME:
+        print("Original song not finish, waiting " + str(MIN_SOUND_TIME - sound.get_length()) + "s more")
+        time.sleep(MIN_SOUND_TIME - sound.get_length())
 
     update_index()
 
