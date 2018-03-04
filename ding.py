@@ -45,12 +45,12 @@ def play_next_song():
 
 
 def launch_action():
+    print("================ Ding! ================")
     play_next_song()
 
 
 def callback_gpio(channel):
-    if GPIO.input(GPIO_SIGNAL):
-        print("DING!")
+    if GPIO.input(channel):
         # ACTION
         launch_action()
 
